@@ -1,9 +1,26 @@
 <script setup lang="ts">
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { convertFahrenheittoCelcius } from "@/utils/degrees";
 import { getWeatherDetailDataApi } from "@/utils/api";
+import TrashIcon from "@/icons/TrashIcon.vue";
 
 const route = useRoute();
+const router = useRouter();
+
+const removeCity = () => {
+  const storageCities = localStorage.getItem("savedCities");
+  if (storageCities) {
+    const savedCities = JSON.parse(storageCities);
+    if (Array.isArray(savedCities)) {
+      const updatedCities = savedCities.filter((item) => item.id !== route.query.id);
+      localStorage.setItem("savedCities", JSON.stringify(updatedCities));
+    }
+  }
+
+  router.push({
+    name: "home",
+  });
+};
 
 const getWeatherData = async () => {
   try {
@@ -125,6 +142,14 @@ const weatherData = await getWeatherData();
           </div>
         </div>
       </div>
+    </div>
+    <!-- Remove Button -->
+    <div
+      class="flex cursor-pointer items-center gap-2 py-12 text-white duration-150 hover:text-red-500"
+      @click="removeCity"
+    >
+      <TrashIcon :width="16" :height="16" />
+      <p>Remove City</p>
     </div>
   </div>
 </template>

@@ -2,7 +2,8 @@
 import { RouterLink } from "vue-router";
 import { convertFahrenheittoCelcius } from "@/utils/degrees";
 
-const { city, temp, maxTemp, minTemp, lat, lng } = defineProps<{
+const { id, city, temp, maxTemp, minTemp, lat, lng } = defineProps<{
+  id: string;
   city: string;
   temp: number;
   maxTemp: number;
@@ -17,7 +18,7 @@ const { city, temp, maxTemp, minTemp, lat, lng } = defineProps<{
     :to="{
       name: 'cityView',
       params: { city },
-      query: { lat, lng },
+      query: { lat, lng, id },
     }"
   >
     <div class="flex cursor-pointer rounded-md bg-secondary px-3 py-6 shadow-md">

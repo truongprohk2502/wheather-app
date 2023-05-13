@@ -42,7 +42,7 @@ const addCity = () => {
 
   const query = { ...route.query };
   delete query.preview;
-  router.replace({ query });
+  (query.id = cityObj.id), router.replace({ query });
 };
 </script>
 

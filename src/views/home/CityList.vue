@@ -4,6 +4,7 @@ import { getWeatherDataApi } from "@/utils/api";
 import CityCard from "./CityCard.vue";
 
 interface IWeather {
+  storageId: string;
   id: string;
   name: string;
   main: {
@@ -28,7 +29,10 @@ if (storageCities) {
       citiesList.map((item) => getWeatherDataApi(item.coords.lat, item.coords.lng)),
     );
 
-    savedCities.value = weatherData.map((item) => item.data);
+    savedCities.value = weatherData.map((item, index) => ({
+      ...item.data,
+      storageId: citiesList[index].id,
+    }));
   }
 }
 </script>
@@ -37,6 +41,7 @@ if (storageCities) {
   <CityCard
     v-for="item in savedCities"
     :key="item.id"
+    :id="item.storageId"
     :city="item.name"
     :temp="item.main.temp"
     :min-temp="item.main.temp_min"
