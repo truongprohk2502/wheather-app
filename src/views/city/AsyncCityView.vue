@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import axios from "axios";
 import { convertFahrenheittoCelcius } from "@/utils/degrees";
+import { getWeatherDetailDataApi } from "@/utils/api";
 
 const route = useRoute();
 
 const getWeatherData = async () => {
   try {
-    const weatherData = await axios.get(
-      `https://api.openweathermap.org/data/2.5/onecall?lat=${route.query.lat}&lon=${route.query.lng}&exclude={part}&appid=7efa332cf48aeb9d2d391a51027f1a71&units=imperial`,
+    const weatherData = await getWeatherDetailDataApi(
+      Number(route.query.lat),
+      Number(route.query.lng),
     );
 
     const localOffset = new Date().getTimezoneOffset() * 60000;

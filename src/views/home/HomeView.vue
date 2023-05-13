@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import axios from "axios";
 import { useRouter } from "vue-router";
+import { getSearchCitiesApi } from "@/utils/api";
+import CityList from "./CityList.vue";
 
 interface ILocation {
   id: string;
@@ -27,11 +28,7 @@ const getSearchResults = () => {
       try {
         searchError.value = false;
 
-        const result = await axios.get(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${
-            searchQuery.value
-          }.json?access_token=${import.meta.env.VITE_MAPBOX_KEY}&types=place`,
-        );
+        const result = await getSearchCitiesApi(searchQuery.value);
 
         searchResults.value = result.data.features.map((item: any) => {
           const locations = item.place_name.split(", ");
@@ -97,6 +94,12 @@ const previewCity = (data: ILocation) => {
           </li>
         </template>
       </ul>
+    </div>
+    <div class="flex flex-col gap-4">
+      <Suspense>
+        <CityList />
+        <template #fallback> Loading... </template>
+      </Suspense>
     </div>
   </main>
 </template>

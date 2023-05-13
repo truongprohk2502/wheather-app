@@ -1,12 +1,49 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRoute, useRouter } from "vue-router";
+import { uid } from "uid";
 import SunIcon from "@/icons/SunIcon.vue";
 import InfoIcon from "@/icons/InfoIcon.vue";
 import PlusIcon from "@/icons/PlusIcon.vue";
 import BaseModal from "./BaseModal.vue";
 
+interface ISavedCity {
+  id: string;
+  city: string;
+  coords: {
+    lat: number;
+    lng: number;
+  };
+}
+
 const openModal = ref<boolean>(false);
+const savedCities = ref<ISavedCity[]>([]);
+
+const route = useRoute();
+const router = useRouter();
+
+const addCity = () => {
+  const storageCities = localStorage.getItem("savedCities");
+  if (storageCities) {
+    savedCities.value = JSON.parse(storageCities);
+  }
+
+  const cityObj: ISavedCity = {
+    id: uid(),
+    city: route.params.city as string,
+    coords: {
+      lat: Number(route.query.lat),
+      lng: Number(route.query.lng),
+    },
+  };
+
+  savedCities.value.push(cityObj);
+  localStorage.setItem("savedCities", JSON.stringify(savedCities.value));
+
+  const query = { ...route.query };
+  delete query.preview;
+  router.replace({ query });
+};
 </script>
 
 <template>
@@ -26,9 +63,11 @@ const openModal = ref<boolean>(false);
           @click="openModal = true"
         />
         <PlusIcon
+          v-if="route.query.preview"
           :width="16"
           :height="16"
           class="cursor-pointer duration-150 hover:text-secondary"
+          @click="addCity"
         />
       </div>
       <BaseModal :open="openModal" @close="openModal = false">
