@@ -3,6 +3,7 @@ import { useRoute, useRouter } from "vue-router";
 import { convertFahrenheittoCelcius } from "@/utils/degrees";
 import { getWeatherDetailDataApi } from "@/utils/api";
 import TrashIcon from "@/icons/TrashIcon.vue";
+import { delay } from "@/utils/delay";
 
 const route = useRoute();
 const router = useRouter();
@@ -45,6 +46,8 @@ const getWeatherData = async () => {
 };
 
 const weatherData = await getWeatherData();
+
+await delay(200);
 </script>
 
 <template>

@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { getSearchCitiesApi } from "@/utils/api";
 import CityList from "./CityList.vue";
+import CityCardSkeleton from "./CityCardSkeleton.vue";
 
 interface ILocation {
   id: string;
@@ -65,6 +66,14 @@ const previewCity = (data: ILocation) => {
     },
   });
 };
+
+const getSavedCitiesQty = () => {
+  const storageCities = localStorage.getItem("savedCities");
+  if (!storageCities) return 0;
+  const savedCities = JSON.parse(storageCities);
+  if (!Array.isArray(savedCities)) return 0;
+  return savedCities.length;
+};
 </script>
 
 <template>
@@ -98,7 +107,12 @@ const previewCity = (data: ILocation) => {
     <div class="flex flex-col gap-4">
       <Suspense>
         <CityList />
-        <template #fallback> Loading... </template>
+        <template #fallback>
+          <CityCardSkeleton
+            v-for="(_, index) in Array(getSavedCitiesQty()).fill(null)"
+            :key="index"
+          />
+        </template>
       </Suspense>
     </div>
   </main>

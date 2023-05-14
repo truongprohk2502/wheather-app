@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { getWeatherDataApi } from "@/utils/api";
 import CityCard from "./CityCard.vue";
+import { delay } from "@/utils/delay";
 
 interface IWeather {
   storageId: string;
@@ -28,6 +29,8 @@ if (storageCities) {
     const weatherData = await Promise.all(
       citiesList.map((item) => getWeatherDataApi(item.coords.lat, item.coords.lng)),
     );
+
+    await delay(200);
 
     savedCities.value = weatherData.map((item, index) => ({
       ...item.data,
